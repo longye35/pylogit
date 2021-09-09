@@ -929,8 +929,9 @@ def calc_fisher_info_matrix(beta,
         weights = np.ones(design.shape[0])
     elif set(weights) == set(np.ones(design.shape[0])):
         weights_per_obs = np.ones(rows_to_obs.get_shape()[1])
-    weights_per_obs =\
-        np.max(rows_to_obs.toarray() * weights[:, None], axis=0)
+    else:
+        weights_per_obs =\
+            np.max(rows_to_obs.toarray() * weights[:, None], axis=0)
 
     ##########
     # Get the required matrices
