@@ -695,8 +695,8 @@ def create_design_matrix(long_form,
                 else:  # the group is a list, tuple, or rang
                     # Create the variable column
                     independent_vars.append(
-                                     long_form[alt_id_col].isin(group).values *
-                                     long_form[variable].values)
+                        long_form[alt_id_col].isin(group).values *
+                        long_form[variable].values)
                     # Create the column name
                     var_names.append("{}_{}".format(variable, str(group)))
 
@@ -914,8 +914,11 @@ def create_long_form_mappings(long_form,
     # column for each of the unique alternatives. This matrix will associate
     # each row as belonging to a particular alternative using a one and using
     # a zero to show non-association.
-    rows_to_alts = create_sparse_mapping(alt_id_values,
-                                         unique_ids=all_alternatives)
+    # rows_to_alts = create_sparse_mapping(alt_id_values,
+    #                                      unique_ids=all_alternatives)
+    # temporary fix for the above line: avoid extreme computational time
+    # rows_to_alts not necessary for mnl model
+    rows_to_alts = None
 
     if choice_col is not None:
         # Create a matrix to associate each row with the same number of
@@ -923,7 +926,7 @@ def create_long_form_mappings(long_form,
         # alternative that a given observation (denoted by the columns)
         # chose.
         chosen_row_to_obs = csr_matrix(rows_to_obs.multiply(
-                                long_form[choice_col].values[:, None]))
+            long_form[choice_col].values[:, None]))
     else:
         chosen_row_to_obs = None
 
@@ -1683,7 +1686,7 @@ def convert_wide_to_long(wide_data,
             # the alternative specific variables do not vary over
             else:
                 new_wide_alt_specific_cols.append(np.zeros(
-                                                    (wide_data.shape[0], 1)))
+                    (wide_data.shape[0], 1)))
         concatenated_long_column = np.concatenate(new_wide_alt_specific_cols,
                                                   axis=1).ravel()
         new_alt_specific_cols.append(concatenated_long_column)

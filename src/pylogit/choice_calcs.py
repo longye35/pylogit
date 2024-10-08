@@ -154,7 +154,7 @@ def calc_probabilities(beta,
     # probability of the observation associated with that row having the
     # alternative associated with that row as the observation's outcome
     individual_denominators = np.asarray(rows_to_obs.transpose().dot(
-                                                    long_exponentials))
+        long_exponentials))
     long_denominators = np.asarray(rows_to_obs.dot(individual_denominators))
     if len(long_exponentials.shape) > 1 and long_exponentials.shape[1] > 1:
         long_probs = (long_exponentials / long_denominators)
@@ -169,7 +169,7 @@ def calc_probabilities(beta,
     else:
         # chosen_probs will be of shape (num_observations,)
         chosen_exponentials = np.asarray(
-                         chosen_row_to_obs.transpose().dot(long_exponentials))
+            chosen_row_to_obs.transpose().dot(long_exponentials))
         if len(long_exponentials.shape) > 1 and long_exponentials.shape[1] > 1:
             chosen_probs = chosen_exponentials / individual_denominators
         else:
@@ -694,7 +694,7 @@ def calc_hessian(beta,
     # the dot product.
     # `d2_ll_db2 = -1 * dh_db.T.dot(dp_dh.dot(dh_db))`
     d2_ll_db2 = -1 * quadratic_prod_wrt_dp_ds(
-                      dh_db.T, dh_db, long_probs, rows_to_obs, weights=weights)
+        dh_db.T, dh_db, long_probs, rows_to_obs, weights=weights)
 
     ##########
     # Form and return the hessian
@@ -707,7 +707,7 @@ def calc_hessian(beta,
         # compute the dot product we need to use the * operator
         # `d2_ll_dc2 = -1 * dh_dc.T.dot(dp_dh * dh_dc)`
         d2_ll_dc2 = -1 * quadratic_prod_wrt_dp_ds(
-                      dh_dc.T, dh_dc, long_probs, rows_to_obs, weights=weights)
+            dh_dc.T, dh_dc, long_probs, rows_to_obs, weights=weights)
 
         # Calculate the second derivative of the log-likelihood with respect
         # to the intercept parameters. Should have shape (J - 1, J - 1) where
@@ -736,7 +736,7 @@ def calc_hessian(beta,
         # compute the dot product we need to use the * operator
         # `d2_ll_dc_db = -1 * dh_db.T.dot(dp_dh * dh_dc)`
         d2_ll_dc_db = -1 * quadratic_prod_wrt_dp_ds(
-                      dh_db.T, dh_dc, long_probs, rows_to_obs, weights=weights)
+            dh_db.T, dh_dc, long_probs, rows_to_obs, weights=weights)
 
         # Calculate the mixed partial derivative of the log-likelihood with
         # respect to the utility coefficients and then with respect to the
@@ -746,7 +746,7 @@ def calc_hessian(beta,
         # compute the dot product we need to use the * operator
         # `d2_ll_d_alpha_db = -1 * dh_db.T.dot(dp_dh * dh_d_alpha)`
         d2_ll_d_alpha_db = -1 * quadratic_prod_wrt_dp_ds(
-                 dh_db.T, dh_d_alpha, long_probs, rows_to_obs, weights=weights)
+            dh_db.T, dh_d_alpha, long_probs, rows_to_obs, weights=weights)
 
         # Form the 3 by 3 partitioned hessian of 2nd derivatives
         top_row = np.concatenate((d2_ll_dc2,
@@ -770,7 +770,7 @@ def calc_hessian(beta,
         # compute the dot product we need to use the * operator
         # `d2_ll_dc2 = -1 * dh_dc.T.dot(dp_dh * dh_dc)`
         d2_ll_dc2 = -1 * quadratic_prod_wrt_dp_ds(
-                      dh_dc.T, dh_dc, long_probs, rows_to_obs, weights=weights)
+            dh_dc.T, dh_dc, long_probs, rows_to_obs, weights=weights)
 
         # Calculate the mixed partial derivative of the log-likelihood with
         # respect to the utility coefficients and then with respect to the
@@ -780,8 +780,7 @@ def calc_hessian(beta,
         # compute the dot product we need to use the * operator
         # `d2_ll_dc_db = -1 * dh_db.T.dot(dp_dh * dh_dc)`
         d2_ll_dc_db = -1 * quadratic_prod_wrt_dp_ds(
-                      dh_db.T, dh_dc, long_probs, rows_to_obs, weights=weights)
-
+            dh_db.T, dh_dc, long_probs, rows_to_obs, weights=weights)
 
         hess = np.concatenate((np.concatenate((d2_ll_dc2,
                                                d2_ll_dc_db.T), axis=1),
@@ -807,7 +806,7 @@ def calc_hessian(beta,
         # compute the dot product we need to use the * operator
         # `d2_ll_d_alpha_db = -1 * dh_db.T.dot(dp_dh * dh_d_alpha)`
         d2_ll_d_alpha_db = -1 * quadratic_prod_wrt_dp_ds(
-                 dh_db.T, dh_d_alpha, long_probs, rows_to_obs, weights=weights)
+            dh_db.T, dh_d_alpha, long_probs, rows_to_obs, weights=weights)
 
         hess = np.concatenate((np.concatenate((d2_ll_d_alpha2,
                                                d2_ll_d_alpha_db.T), axis=1),
@@ -927,8 +926,10 @@ def calc_fisher_info_matrix(beta,
     # Calculate the weights for the sample
     if weights is None:
         weights = np.ones(design.shape[0])
-    weights_per_obs =\
-        np.max(rows_to_obs.toarray() * weights[:, None], axis=0)
+    # weights_per_obs =\
+    #     np.max(rows_to_obs.toarray() * weights[:, None], axis=0)
+    # tmporary fix for the above line: avoid memory error
+    weights_per_obs = np.ones(rows_to_obs.shape[1])
 
     ##########
     # Get the required matrices
