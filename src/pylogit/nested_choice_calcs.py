@@ -183,7 +183,7 @@ def calc_nested_probs(nest_coefs,
     # Get the denominators for each individual
     ind_denom = (np.power(ind_exp_sums_per_nest,
                           nest_coefs[None, :])
-                   .sum(axis=1))
+                 .sum(axis=1))
     # Guard against overflow and underflow
     inf_idx = np.isposinf(ind_denom)
     ind_denom[inf_idx] = max_comp_value
@@ -566,7 +566,9 @@ def calc_nested_gradient(orig_nest_coefs,
     # Calculate the weights for the sample
     if weights is None:
         weights = np.ones(design.shape[0])
-    weights_per_obs = np.max(rows_to_obs.toarray() * weights[:, None], axis=0)
+    # weights_per_obs = np.max(rows_to_obs.toarray() * weights[:, None], axis=0)
+    # weights_per_obs = weights
+    weights_per_obs = np.ones(rows_to_obs.shape[1])
 
     # Transform the nest coefficients into their "always positive" versions
     nest_coefs = naturalize_nest_coefs(orig_nest_coefs)
@@ -608,8 +610,9 @@ def calc_nested_gradient(orig_nest_coefs,
     half_deriv = ((vector_dict["long_probs"] -
                    vector_dict["long_chosen_nest"] *
                    vector_dict["prob_given_nest"]) *
-                  long_w *
-                  weights)
+                  long_w)
+    #   long_w *
+    #   weights)
     nest_gradient_term_2 = (rows_to_nests.transpose()
                                          .dot(half_deriv)[:, None]).ravel()
 
@@ -743,7 +746,8 @@ def calc_bhhh_hessian_approximation(orig_nest_coefs,
     # Calculate the weights for the sample
     if weights is None:
         weights = np.ones(design.shape[0])
-    weights_per_obs = np.max(rows_to_obs.toarray() * weights[:, None], axis=0)
+    # weights_per_obs = np.max(rows_to_obs.toarray() * weights[:, None], axis=0)
+    weights_per_obs = np.ones(rows_to_obs.shape[1])
 
     # Transform the nest coefficients into their "always positive" versions
     nest_coefs = naturalize_nest_coefs(orig_nest_coefs)
